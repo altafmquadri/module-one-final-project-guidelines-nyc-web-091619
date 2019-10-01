@@ -3,15 +3,12 @@ class CliApp
         puts "Welcome to our movie service"
         puts "*" *28
         puts "Please enter your username to begin: "
-        get_user_name
+        username_obj = User.new
+        inputted_name = gets.chomp
+        username_obj.activating_user(inputted_name)
     end
 
-    def get_user_name
-        name = gets.chomp
-    end
+    
 
-    def activating_user
-        get_user_name.create
-    end
     
 end
