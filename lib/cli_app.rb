@@ -30,7 +30,7 @@ class CliApp
         if mms.between?(1, MENU_CHOICES.count)
             case mms
             when 1
-                Movie.all.each{|movie|puts movie.title}
+                browse_movies
             when 2
                 puts "2 is working"
             end
@@ -40,4 +40,11 @@ class CliApp
             main_menu
         end
     end
+end
+
+
+def browse_movies
+movies = Movie.all.map{|movie|movie.title}
+prompt = TTY::Prompt.new
+movie_choice = prompt.select("Choose a Movie", movies, filter: true)
 end
