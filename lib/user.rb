@@ -11,7 +11,6 @@ class User < ActiveRecord::Base
         movies = Movie.all.map{|movie|movie.title}
         prompt = TTY::Prompt.new
         movie_choice = prompt.select("Choose a Movie", movies, filter: true)
-        #purchase_movie(movie_choice)
     end
 
     def purchase_movie(selected_movie)
@@ -32,9 +31,6 @@ class User < ActiveRecord::Base
     end
 
     def view_ticket
-        #user does not get tickets passed
-        ##  Ticket.all.find_by(id: 1) #gives me the first user "Jason" with user_id & movie_id 1
-        ##  User.all.find_by(id: 1) # gives me the first user "Jason" with  id (user_id in Tickets) 1
         tickets = self.tickets.all
         my_tickets = tickets.map{|ticket| "#{Movie.find_by(id: ticket.movie_id).title}: $#{Movie.find_by(id: ticket.movie_id).price}"}
         puts my_tickets
@@ -64,16 +60,3 @@ class User < ActiveRecord::Base
         end
     end
 end # End of Class
-
-
-
-
-
- # if User.find_by(name: u_name)
-        #     puts "Welcome back"
-        #     self.name
-        # else
-        # User.create(name: u_name )
-        #     puts "Welcome #{u_name}"
-        #     self.name
-        # end
