@@ -44,24 +44,26 @@ class User < ActiveRecord::Base
     def cancel_ticket_display
         prompt = TTY::Prompt.new
         ticket_list = self.view_ticket
-        selected_movie = prompt.select("Choose a Movie", ticket_list, filter: true)
+        ticket_list.length > 0 ? (selected_movie = prompt.select("Choose a Movie", ticket_list, filter: true)) : (puts "You don't have any tickets.")
     end
 
     def cancel_ticket(selected_movie)
-        selection = selected_movie
-        selection = selection.split[0].gsub(":","")
-        prompt = TTY::Prompt.new
-        cancel = prompt.yes?("Would you like to cancel #{selection}?")
-        if cancel
-            ticket_to_cancel = Ticket.find_by(user_id: self.id, movie_id: Movie.find_by(title: selection).id)
-            ticket_to_cancel.add_back_seat
-            ticket_to_cancel.destroy
-            false
-        else
-            false
+        if selected_movie
+            selection = selected_movie
+            selection = selection.split(":")[0]
+            prompt = TTY::Prompt.new
+            cancel = prompt.yes?("Would you like to cancel #{selection}?")
+            if cancel
+                ticket_to_cancel = Ticket.find_by(user_id: self.id, movie_id: Movie.find_by(title: selection).id)
+                ticket_to_cancel.add_back_seat
+                ticket_to_cancel.destroy
+                false
+            else
+                false
+            end
         end
     end
-end
+end # End of Class
 
 
 
