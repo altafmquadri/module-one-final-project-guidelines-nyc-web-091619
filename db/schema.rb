@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_02_231317) do
+ActiveRecord::Schema.define(version: 2019_10_03_191748) do
 
   create_table "movies", force: :cascade do |t|
     t.string "title"
     t.string "genre"
     t.float "price"
     t.integer "capacity"
+    t.integer "seats_sold"
   end
 
   create_table "tickets", force: :cascade do |t|

@@ -18,11 +18,10 @@ class User < ActiveRecord::Base
         selection = selected_movie
         prompt = TTY::Prompt.new
         buy = prompt.yes?("Would you like to purchase #{selection}?")
-        if Movie.find_by(title: selection).capacity > 0
+        if (Movie.find_by(title: selection).seats_sold) < (Movie.find_by(title: selection).capacity)
             if buy  
                 new_ticket = Ticket.create(user_id: User.find_by(name: self.name).id, movie_id: Movie.find_by(title: selection).id)
                 new_ticket.num_of_seats_available
-                #binding.pry
                 false
             else
                 false
@@ -55,6 +54,7 @@ class User < ActiveRecord::Base
         cancel = prompt.yes?("Would you like to cancel #{selection}?")
         if cancel
             ticket_to_cancel = Ticket.find_by(user_id: self.id, movie_id: Movie.find_by(title: selection).id)
+            ticket_to_cancel.add_back_seat
             ticket_to_cancel.destroy
             false
         else
