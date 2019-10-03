@@ -18,11 +18,17 @@ class User < ActiveRecord::Base
         selection = selected_movie
         prompt = TTY::Prompt.new
         buy = prompt.yes?("Would you like to purchase #{selection}?")
-        if buy
-            Ticket.create(user_id: User.find_by(name: self.name).id, movie_id: Movie.find_by(title: selection).id)
-            false
+        if Movie.find_by(title: selection).capacity > 0
+            if buy  
+                new_ticket = Ticket.create(user_id: User.find_by(name: self.name).id, movie_id: Movie.find_by(title: selection).id)
+                new_ticket.num_of_seats_available
+                #binding.pry
+                false
+            else
+                false
+            end
         else
-            false
+            puts "Movie is sold out!"
         end
     end
 
