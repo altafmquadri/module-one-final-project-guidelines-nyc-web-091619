@@ -14,9 +14,11 @@ class User < ActiveRecord::Base
     end
 
     def purchase_movie(selected_movie)
+        choices = ["yes", "no"]
         selection = selected_movie
         prompt = TTY::Prompt.new
-        buy = prompt.yes?("Would you like to purchase #{selection}?")
+        user_purchase_selection = prompt.select("Would you like to purchase #{selection}?", choices)
+        buy = user_purchase_selection == 'yes'
         #nested logic to create a ticket only when there is capacity
         if (Movie.find_by(title: selection).seats_sold) < (Movie.find_by(title: selection).capacity)
             #this bit of logic was fun, it's an instantiation of ticket with nested find functions
@@ -54,7 +56,9 @@ class User < ActiveRecord::Base
             # movie in the find function
             selection = selection.split(":")[0]
             prompt = TTY::Prompt.new
-            cancel = prompt.yes?("Would you like to cancel #{selection}?")
+            choices = ["yes", "no"]
+            user_cancel_selection = prompt.select("Would you like to cancel your #{selection}?", choices)
+            cancel = user_cancel_selection == 'yes'
             # order of logic really matters to display the cancel to the user
             if cancel
                 ticket_to_cancel = Ticket.find_by(user_id: self.id, movie_id: Movie.find_by(title: selection).id)
