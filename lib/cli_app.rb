@@ -15,17 +15,26 @@ class CliApp
         main_menu_selection = gets.chomp.to_i
         if main_menu_selection == 1
             selected = @activated_user.browse_movies  
-            @activated_user.purchase_movie(selected) ? @activated_user.purchase_movie(selected) : (puts "\n You've purchased #{selected}!"; main_menu) 
+            if @activated_user.purchase_movie(selected)
+                @activated_user.purchase_movie(selected) 
+            else
+                main_menu
+            end
         elsif main_menu_selection == 2
-            @activated_user.view_ticket
-            puts "\nPress any key to continue:"
-            gets.chomp
-            main_menu
+            if Ticket.find_by(user_id: @activated_user.id)
+                @activated_user.view_ticket
+                puts "\nPress any key to continue:"
+                gets.chomp
+                main_menu
+            else
+                puts "You do not have any tickets to view!"
+                main_menu
+            end
         elsif main_menu_selection == 3 
             selected = @activated_user.cancel_ticket_display
-            if @activated_user.cancel_ticket(selected) 
-                @activated_user.cancel_ticket(selected)  
-                puts "\n You've cancelled your purchase of #{selected}."
+            if selected && @activated_user.cancel_ticket(selected)
+                @activated_user.cancel_ticket(selected) 
+                main_menu
             else 
                 main_menu
             end

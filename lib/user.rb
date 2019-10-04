@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
         if (Movie.find_by(title: selection).seats_sold) < (Movie.find_by(title: selection).capacity)
             if buy  
                 new_ticket = Ticket.create(user_id: User.find_by(name: self.name).id, movie_id: Movie.find_by(title: selection).id)
+                puts "Enjoy your purchase of #{selection}!"
                 new_ticket.num_of_seats_available
                 false
             else
@@ -51,6 +52,7 @@ class User < ActiveRecord::Base
             if cancel
                 ticket_to_cancel = Ticket.find_by(user_id: self.id, movie_id: Movie.find_by(title: selection).id)
                 ticket_to_cancel.add_back_seat
+                puts "You have cancelled the purchase of #{selection}."
                 ticket_to_cancel.destroy
                 false
             else
