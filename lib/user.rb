@@ -2,6 +2,7 @@ class User < ActiveRecord::Base
     has_many :tickets
     has_many :movies, through: :tickets
     
+    #address returning a user or creating a new user
     def self.activating_user(u_name)
        User.find_or_create_by(name: u_name)
     end  
@@ -16,8 +17,10 @@ class User < ActiveRecord::Base
         selection = selected_movie
         prompt = TTY::Prompt.new
         buy = prompt.yes?("Would you like to purchase #{selection}?")
+        #nested logic to create a ticket only when there is capacity
         if (Movie.find_by(title: selection).seats_sold) < (Movie.find_by(title: selection).capacity)
-            if buy  
+            #this bit of logic was fun, it's an instantiation of ticket with nested find functions
+            if buy
                 new_ticket = Ticket.create(user_id: User.find_by(name: self.name).id, movie_id: Movie.find_by(title: selection).id)
                 puts "Enjoy your purchase of #{selection}!"
                 new_ticket.num_of_seats_available
@@ -46,9 +49,13 @@ class User < ActiveRecord::Base
     def cancel_ticket(selected_movie)
         if selected_movie
             selection = selected_movie
+            # this was challenging code was working until we had a title phrase
+            # the split method with choosing the colon as the seperator allowed for use of the
+            # movie in the find function
             selection = selection.split(":")[0]
             prompt = TTY::Prompt.new
             cancel = prompt.yes?("Would you like to cancel #{selection}?")
+            # order of logic really matters to display the cancel to the user
             if cancel
                 ticket_to_cancel = Ticket.find_by(user_id: self.id, movie_id: Movie.find_by(title: selection).id)
                 ticket_to_cancel.add_back_seat
